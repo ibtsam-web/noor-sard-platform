@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "غير مصرح بالدخول";
+}
+
+<div class="login-page">
+
+    <main class="login-container">
+
+        <section class="login-card">
+
+            <div class="reset-dialog-icon">⛔</div>
+
+            <div class="login-heading">
+                <h1>غير مصرح بالدخول</h1>
+
+                <p>
+                    لا يمتلك هذا الحساب صلاحية فتح هذه الصفحة.
+                </p>
+            </div>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="login-submit-button"
+               style="
+                   display: grid;
+                   place-items: center;
+                   text-decoration: none;
+               ">
+                العودة إلى الشاشة الرئيسية
+            </a>
+
+        </section>
+
+    </main>
+
+</div>

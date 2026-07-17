@@ -1,0 +1,346 @@
+﻿@model NoorSardPlatform.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "منصة السرد";
+}
+
+<div class="noor-page">
+
+    <header class="noor-header">
+
+        <div class="noor-header-content">
+
+            @if (User.Identity?.IsAuthenticated == true &&
+                User.IsInRole("Admin"))
+            {
+                <a asp-controller="Admin"
+                asp-action="Index"
+                class="admin-floating-button">
+                    لوحة الإدارة
+                </a>
+            }
+
+            <div class="noor-logo-box">
+                <img
+                    src="~/images/noor-logo.jpg"
+                    alt="شعار برنامج النور"
+                    class="noor-logo" />
+            </div>
+
+            <div class="noor-header-text">
+                <h1>منصة السرد – برنامج النور</h1>
+                <h2>يوم السرد القرآني</h2>
+                <p>١٤٤٧ هـ</p>
+            </div>
+
+        </div>
+
+    </header>
+
+    <main class="noor-main">
+
+    <section class="stats-grid">
+
+        <article class="stat-card">
+            <div class="stat-icon">👩🏻</div>
+            <div class="stat-content">
+                <span class="stat-label">عدد المشاركات</span>
+                <strong class="stat-value"
+                        id="participantsCountValue">
+                    @Model.ParticipantsCount
+                </strong>
+            </div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon">📖</div>
+            <div class="stat-content">
+                <span class="stat-label">مجموع الأجزاء المسردة</span>
+                <strong class="stat-value"
+                        id="totalCompletedPartsValue">
+                    @Model.TotalCompletedParts
+                </strong>
+            </div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-content">
+                <span class="stat-label">الهدف الكلي</span>
+                <strong class="stat-value"
+                        id="totalTargetPartsValue">
+                    @Model.TotalTargetParts
+                </strong>
+            </div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <span class="stat-label">نسبة الإنجاز العامة</span>
+                <strong class="stat-value"
+                        id="overallPercentageStatValue">
+                    @Model.OverallPercentage.ToString("0")%
+                </strong>
+            </div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon">🌟</div>
+            <div class="stat-content">
+                <span class="stat-label">عدد متمات سرد محفوظ سنة ١٤٤٧هـ</span>
+                <strong class="stat-value"
+                        id="yearCompletedCountValue">
+                    @Model.YearMemorizationCompletedCount
+                </strong>
+            </div>
+        </article>
+
+    </section>
+
+    <section class="chart-card">
+
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">إحصائيات مباشرة</span>
+            <h3>توزيع الساردات حسب عدد الأجزاء المسردة</h3>
+        </div>
+
+        <div class="live-badge">
+            <span class="live-dot"></span>
+            تحديث مباشر
+        </div>
+    </div>
+
+    <div class="chart-wrapper">
+        <canvas id="partsChart"></canvas>
+    </div>
+
+</section>
+
+<section class="overall-progress-card">
+
+    <div class="progress-heading">
+
+        <div>
+            <span class="section-kicker">التقدم العام</span>
+            <h3>نسبة الإنجاز الكلية ليوم السرد</h3>
+        </div>
+
+        <strong class="overall-progress-value" id="overallProgressValue">
+            @Model.OverallPercentage.ToString("0")%
+        </strong>
+
+    </div>
+
+    <div class="noor-progress-track"
+         role="progressbar"
+         aria-label="نسبة الإنجاز الكلية"
+         aria-valuemin="0"
+         aria-valuemax="100"
+         aria-valuenow="@Model.OverallPercentage.ToString("0")">
+
+        <div class="noor-progress-fill"
+             id="overallProgressFill"
+             style="width: @Model.OverallPercentage.ToString("0")%;">
+
+            <span class="progress-shine"></span>
+
+        </div>
+
+    </div>
+
+    <div class="progress-details">
+
+        <span>
+            المنجز:
+            <strong id="completedPartsText">@Model.TotalCompletedParts جزءًا</strong>
+        </span>
+
+        <span>
+            الهدف:
+            <strong id="targetPartsText">@Model.TotalTargetParts جزء</strong>
+        </span>
+
+    </div>
+
+</section>
+
+<section class="participants-card">
+
+    <div class="section-heading participants-heading">
+        <div>
+            <span class="section-kicker">الساردات</span>
+            <h3>البحث في قائمة الحافظات</h3>
+        </div>
+
+        <span class="participants-count" id="visibleParticipantsCount">
+            @Model.ParticipantsCount اسمًا
+        </span>
+    </div>
+
+    <div class="participants-search">
+
+        <span class="search-icon" aria-hidden="true">
+            🔍
+        </span>
+
+        <input
+            type="search"
+            id="participantSearch"
+            class="participant-search-input"
+            placeholder="اكتبي اسم الحافظة..."
+            autocomplete="off"
+            aria-label="البحث باسم الحافظة" />
+
+        <button
+            type="button"
+            id="clearParticipantSearch"
+            class="clear-search-button"
+            aria-label="مسح البحث">
+            ×
+        </button>
+
+    </div>
+
+    <div class="participants-list" id="participantsList">
+
+@foreach (var participant in Model.Participants)
+{
+    <a asp-controller="Supervisor"
+       asp-action="Participant"
+       asp-route-id="@participant.Id"
+       class="participant-item"
+       data-name="@participant.FullName">
+
+        <span class="participant-number">
+            @participant.Id
+        </span>
+
+        <span class="participant-name">
+            @participant.FullName
+        </span>
+
+        <span class="participant-arrow">←</span>
+
+    </a>
+}
+
+    </div>
+
+    <div class="participants-empty" id="participantsEmpty" hidden>
+        <span>لا توجد حافظة بهذا الاسم.</span>
+    </div>
+
+</section>
+
+<section class="medals-section">
+
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">الأوسمة</span>
+            <h3>إحصائيات الحاصلات على الأوسمة</h3>
+        </div>
+    </div>
+
+    <div class="medals-grid">
+
+        <article class="medal-card bronze-medal">
+
+            <div class="medal-icon">🥉</div>
+
+            <div class="medal-content">
+                <span class="medal-title">الوسام البرونزي</span>
+                <strong class="medal-count"
+                        id="bronzeMedalCount">
+                    @Model.BronzeMedalCount
+                </strong>
+                <span class="medal-description">حافظة</span>
+            </div>
+
+            <a asp-controller="Admin"
+            asp-action="ExportBronzeMedal"
+            class="medal-download-button"
+            aria-label="تحميل ملف الوسام البرونزي">
+
+                <span>تحميل Excel</span>
+                <span aria-hidden="true">⬇</span>
+
+            </a>
+
+        </article>
+
+        <article class="medal-card silver-medal">
+
+            <div class="medal-icon">🥈</div>
+
+            <div class="medal-content">
+                <span class="medal-title">الوسام الفضي</span>
+                <strong class="medal-count"
+                        id="silverMedalCount">
+                    @Model.SilverMedalCount
+                </strong>
+                <span class="medal-description">حافظة</span>
+            </div>
+
+            <a asp-controller="Admin"
+            asp-action="ExportSilverMedal"
+            class="medal-download-button"
+            aria-label="تحميل ملف الوسام الفضي">
+
+                <span>تحميل Excel</span>
+                <span aria-hidden="true">⬇</span>
+
+            </a>
+
+        </article>
+
+        <article class="medal-card gold-medal">
+
+            <div class="medal-icon">🥇</div>
+
+            <div class="medal-content">
+                <span class="medal-title">الوسام الذهبي</span>
+                <strong class="medal-count"
+                        id="goldMedalCount">
+                    @Model.GoldMedalCount
+                </strong>
+                <span class="medal-description">حافظات</span>
+            </div>
+
+            <a asp-controller="Admin"
+            asp-action="ExportGoldMedal"
+            class="medal-download-button"
+            aria-label="تحميل ملف الوسام الذهبي">
+
+                <span>تحميل Excel</span>
+                <span aria-hidden="true">⬇</span>
+
+            </a>
+
+        </article>
+
+    </div>
+
+</section>
+
+</main>
+
+</div>
+<script>
+    window.noorDashboardData = {
+        chartLabels: @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize(
+                Model.ChartLabels
+            )
+        ),
+
+        chartValues: @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize(
+                Model.ChartValues
+            )
+        )
+    };
+</script>
+@section Scripts {
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+}

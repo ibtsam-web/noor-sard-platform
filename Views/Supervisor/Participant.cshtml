@@ -1,0 +1,272 @@
+@model NoorSardPlatform.Models.Participant
+@{
+    ViewData["Title"] = "متابعة الحافظة";
+}
+
+<div class="supervisor-page">
+
+    <header class="supervisor-header">
+
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="back-button">
+            <span aria-hidden="true">→</span>
+            العودة إلى القائمة
+        </a>
+
+        <form asp-controller="Account"
+            asp-action="Logout"
+            method="post"
+            class="logout-form">
+
+            @Html.AntiForgeryToken()
+
+            <button type="submit"
+                    class="back-button logout-button">
+                تسجيل الخروج
+            </button>
+
+        </form>
+
+        <div class="supervisor-logo-title">
+
+            <div class="supervisor-logo-box">
+                <img src="~/images/noor-logo.jpg"
+                     alt="شعار برنامج النور"
+                     class="supervisor-logo" />
+            </div>
+
+            <div>
+                <span>منصة السرد – برنامج النور</span>
+                <h1>متابعة إنجاز الحافظة</h1>
+            </div>
+
+        </div>
+
+    </header>
+
+    <main class="supervisor-main">
+
+        <section class="participant-profile-card">
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="admin-alert success-alert">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+
+            <span class="profile-label">اسم الحافظة</span>
+
+            <h2 id="participantFullName">
+                @Model.FullName
+            </h2>
+
+            <span class="profile-note">
+                أدخلي الهدف، ثم حدّثي المنجز بعد إتمام كل جزء.
+            </span>
+
+        </section>
+
+        <form asp-controller="Supervisor"
+            asp-action="SaveProgress"
+            method="post"
+            class="participant-progress-form"
+            id="participantProgressForm">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                name="id"
+                value="@Model.Id" />
+
+            <section class="supervisor-form-card">
+
+                <div class="form-section-heading">
+                    <span class="form-section-number">١</span>
+
+                    <div>
+                        <h3>عدد الأجزاء المستهدفة</h3>
+                        <p>يُدخل مرة واحدة عند بداية السرد.</p>
+                    </div>
+                </div>
+
+                <div class="target-input-wrapper">
+
+                    <input type="number"
+                           id="targetParts"
+                           name="TargetParts"
+                           class="target-parts-input"
+                           value="@(Model.TargetParts > 0 ? Model.TargetParts : 1)"
+                           min="1"
+                           max="30"
+                           inputmode="numeric" />
+
+                    <span>جزءًا</span>
+
+                </div>
+
+            </section>
+
+            <section class="supervisor-form-card">
+
+                <div class="form-section-heading">
+                    <span class="form-section-number">٢</span>
+
+                    <div>
+                        <h3>المنجز إلى الآن</h3>
+                        <p>اضغطي على الزائد بعد إتمام كل جزء.</p>
+                    </div>
+                </div>
+
+                <div class="completed-counter">
+
+                    <button type="button"
+                            class="counter-button counter-minus"
+                            id="decreaseCompleted"
+                            aria-label="إنقاص جزء">
+                        −
+                    </button>
+
+                    <div class="completed-value-box">
+
+                        <strong id="completedPartsValue">
+                            @Model.CompletedParts
+                        </strong>
+
+                        <span>جزءًا</span>
+
+                        <input type="hidden"
+                            id="completedParts"
+                            name="completedParts"
+                            value="@Model.CompletedParts" />
+
+                    </div>
+
+                    <button type="button"
+                            class="counter-button counter-plus"
+                            id="increaseCompleted"
+                            aria-label="إضافة جزء">
+                        +
+                    </button>
+
+                </div>
+
+            </section>
+
+            <section class="supervisor-form-card">
+
+                <div class="form-section-heading">
+                    <span class="form-section-number">٣</span>
+
+                    <div>
+                        <h3>نسبة الإنجاز</h3>
+                        <p>تُحسب تلقائيًا من الهدف والمنجز.</p>
+                    </div>
+                </div>
+
+                <div class="participant-percentage">
+
+                    <strong id="participantPercentageValue">
+                        @Model.CompletionPercentage.ToString("0")%
+                    </strong>
+
+                    <div class="participant-progress-track"
+                         role="progressbar"
+                         aria-label="نسبة إنجاز الحافظة"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="@Model.CompletionPercentage.ToString("0")">
+
+                        <div class="participant-progress-fill"
+                             id="participantProgressFill"
+                             style="width: @Model.CompletionPercentage.ToString("0")%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="supervisor-form-card">
+
+                <div class="form-section-heading">
+                    <span class="form-section-number">٤</span>
+
+                    <div>
+                        <h3>الأوسمة</h3>
+                        <p>يمكن للحافظة الحصول على أكثر من وسام.</p>
+                    </div>
+                </div>
+
+                <div class="medal-options">
+
+                    <label class="medal-option bronze-option">
+
+                        <input type="checkbox"
+                            name="bronzeMedal"
+                            id="bronzeMedal"
+                            value="true"
+                            checked="@Model.BronzeMedal" />
+
+                        <span class="medal-option-box">
+                            <span class="medal-option-icon">🥉</span>
+                            <span>الوسام البرونزي</span>
+                        </span>
+
+                    </label>
+
+                    <label class="medal-option silver-option">
+
+                        <input type="checkbox"
+                            name="silverMedal"
+                            id="silverMedal"
+                            value="true"
+                            checked="@Model.SilverMedal" />
+
+                        <span class="medal-option-box">
+                            <span class="medal-option-icon">🥈</span>
+                            <span>الوسام الفضي</span>
+                        </span>
+
+                    </label>
+
+                    <label class="medal-option gold-option">
+
+                        <input type="checkbox"
+                            name="goldMedal"
+                            id="goldMedal"
+                            value="true"
+                            checked="@Model.GoldMedal" />
+
+                        <span class="medal-option-box">
+                            <span class="medal-option-icon">🥇</span>
+                            <span>الوسام الذهبي</span>
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </section>
+
+            <div class="supervisor-actions">
+
+                <button type="submit"
+                        class="save-progress-button">
+                    حفظ التحديث
+                </button>
+
+            </div>
+
+        </form>
+
+    </main>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/supervisor.js"
+            asp-append-version="true"></script>
+}

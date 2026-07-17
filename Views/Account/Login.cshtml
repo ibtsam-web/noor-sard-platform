@@ -1,0 +1,146 @@
+@model NoorSardPlatform.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "تسجيل الدخول";
+}
+
+<div class="login-page">
+
+    <div class="login-decoration login-decoration-one"></div>
+    <div class="login-decoration login-decoration-two"></div>
+
+    <main class="login-container">
+
+        <section class="login-card">
+
+            <div class="login-logo-box">
+                <img src="~/images/noor-logo.jpg"
+                     alt="شعار برنامج النور"
+                     class="login-logo" />
+            </div>
+
+            <div class="login-heading">
+                <span>منصة السرد – برنامج النور</span>
+                <h1>تسجيل الدخول</h1>
+
+                <p>
+                    الدخول مخصص للإدارة ومشرفات يوم السرد.
+                </p>
+            </div>
+
+            <form asp-controller="Account"
+                  asp-action="Login"
+                  method="post"
+                  class="login-form">
+
+                @Html.AntiForgeryToken()
+
+                <input asp-for="ReturnUrl"
+                       type="hidden" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="login-validation-summary">
+                </div>
+
+                <div class="login-field">
+
+                    <label asp-for="Username"></label>
+
+                    <div class="login-input-wrapper">
+                        <span aria-hidden="true">👤</span>
+
+                        <input asp-for="Username"
+                               autocomplete="username"
+                               autofocus
+                               placeholder="أدخلي اسم المستخدم" />
+                    </div>
+
+                    <span asp-validation-for="Username"
+                          class="field-validation-message">
+                    </span>
+
+                </div>
+
+                <div class="login-field">
+
+                    <label asp-for="Password"></label>
+
+                    <div class="login-input-wrapper">
+
+                        <span aria-hidden="true">🔒</span>
+
+                        <input asp-for="Password"
+                               id="loginPassword"
+                               autocomplete="current-password"
+                               placeholder="أدخلي كلمة المرور" />
+
+                        <button type="button"
+                                class="toggle-password-button"
+                                id="toggleLoginPassword"
+                                aria-label="إظهار كلمة المرور">
+                            إظهار
+                        </button>
+
+                    </div>
+
+                    <span asp-validation-for="Password"
+                          class="field-validation-message">
+                    </span>
+
+                </div>
+
+                <button type="submit"
+                        class="login-submit-button">
+                    دخول المنصة
+                </button>
+
+            </form>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="login-dashboard-link">
+                الانتقال إلى شاشة العرض العامة
+            </a>
+
+        </section>
+
+    </main>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const passwordInput =
+            document.getElementById("loginPassword");
+
+        const togglePasswordButton =
+            document.getElementById("toggleLoginPassword");
+
+        togglePasswordButton?.addEventListener(
+            "click",
+            function () {
+                const passwordIsHidden =
+                    passwordInput.type === "password";
+
+                passwordInput.type =
+                    passwordIsHidden
+                        ? "text"
+                        : "password";
+
+                this.textContent =
+                    passwordIsHidden
+                        ? "إخفاء"
+                        : "إظهار";
+
+                this.setAttribute(
+                    "aria-label",
+                    passwordIsHidden
+                        ? "إخفاء كلمة المرور"
+                        : "إظهار كلمة المرور"
+                );
+            }
+        );
+    </script>
+}

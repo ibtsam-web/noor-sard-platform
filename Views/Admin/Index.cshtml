@@ -1,0 +1,410 @@
+@{
+    ViewData["Title"] = "إدارة منصة السرد";
+}
+
+<div class="admin-page">
+
+    <header class="supervisor-header">
+
+        <div class="admin-navigation">
+
+    <a asp-controller="Admin"
+       asp-action="Index"
+       class="admin-nav-button active">
+        صفحة الإدارة
+    </a>
+
+    <a asp-controller="Home"
+       asp-action="Index"
+       class="admin-nav-button">
+        الصفحة الرئيسية
+    </a>
+
+</div>
+
+        <form asp-controller="Account"
+            asp-action="Logout"
+            method="post"
+            class="logout-form">
+
+            @Html.AntiForgeryToken()
+
+            <button type="submit"
+                    class="back-button logout-button">
+                تسجيل الخروج
+            </button>
+
+        </form>
+
+        <div class="supervisor-logo-title">
+
+            <div class="supervisor-logo-box">
+                <img src="~/images/noor-logo.jpg"
+                     alt="شعار برنامج النور"
+                     class="supervisor-logo" />
+            </div>
+
+            <div>
+                <span>منصة السرد – برنامج النور</span>
+                <h1>صفحة الإدارة</h1>
+            </div>
+
+        </div>
+
+    </header>
+
+    <main class="admin-main">
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="admin-alert success-alert">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        @if (TempData["InfoMessage"] != null)
+        {
+            <div class="admin-alert info-alert">
+                @TempData["InfoMessage"]
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="admin-alert error-alert">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <section class="admin-card">
+
+            <div class="form-section-heading">
+                <span class="form-section-number">١</span>
+
+                <div>
+                    <h3>رفع ملف أسماء المشاركات</h3>
+
+                    <p>
+                        اختاري ملف Excel الذي يحتوي على الأسماء
+                        في العمود الأول.
+                    </p>
+                </div>
+            </div>
+
+            <form asp-controller="Admin"
+                  asp-action="ImportParticipants"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="excel-upload-form">
+
+                @Html.AntiForgeryToken()
+
+                <label class="excel-file-box"
+                       for="excelFile">
+
+                    <span class="excel-file-icon">📄</span>
+
+                    <span class="excel-file-text">
+                        <strong id="excelFileName">
+                            اختاري ملف Excel
+                        </strong>
+
+                        <small>
+                            الصيغة المدعومة: .xlsx
+                        </small>
+                    </span>
+
+                    <input type="file"
+                           id="excelFile"
+                           name="excelFile"
+                           accept=".xlsx"
+                           required />
+                </label>
+
+                <button type="submit"
+                        class="save-progress-button">
+                    رفع واستيراد الأسماء
+                </button>
+
+                <section class="admin-card admin-export-card">
+
+                    <div class="form-section-heading">
+
+                        <span class="form-section-number">٢</span>
+
+                        <div>
+                            <h3>تحميل نتائج يوم السرد</h3>
+
+                            <p>
+                                تحميل ملف Excel يحتوي على جميع الحافظات
+                                وأهدافهن وإنجازهن والأوسمة.
+                            </p>
+                    
+                        </div>
+
+                    </div>
+
+                    <a asp-controller="Admin"
+                    asp-action="ExportAllResults"
+                    class="admin-export-button">
+
+                        <span class="admin-export-icon">📊</span>
+
+                        <span>
+                            <strong>تحميل جميع النتائج</strong>
+                            <small>ملف Excel شامل</small>
+                        </span>
+
+                        <span class="admin-export-arrow">⬇</span>
+
+                    </a>
+
+                    <a asp-controller="Admin"
+                        asp-action="ExportAllResultsPdf"
+                        class="admin-export-button pdf-export-button">
+
+                            <span class="admin-export-icon">📕</span>
+
+                            <span>
+                                <strong>تحميل النتائج بصيغة PDF</strong>
+                                <small>
+                                    تقرير شامل وجاهز للطباعة
+                                </small>
+                            </span>
+
+                            <span class="admin-export-arrow">⬇</span>
+
+                        </a>
+
+                        <section class="admin-card reset-results-card">
+
+                        <div class="form-section-heading">
+
+                            <span class="form-section-number reset-section-number">
+                                ٣
+                            </span>
+
+                            <div>
+                                <h3>إعادة ضبط نتائج الاختبار</h3>
+
+                                <p>
+                                    تصفير الهدف والمنجز والأوسمة لجميع الحافظات،
+                                    مع الاحتفاظ بقائمة الأسماء.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="reset-warning">
+
+                            <strong>تنبيه مهم</strong>
+
+                            <p>
+                                لا يمكن التراجع عن هذه العملية. حمّلي نسخة Excel أو
+                                PDF قبل المتابعة إذا كنتِ تحتاجين إلى النتائج الحالية.
+                            </p>
+
+                        </div>
+
+                        <button type="button"
+                                class="open-reset-button"
+                                id="openResetDialog">
+                            إعادة ضبط النتائج
+                        </button>
+
+                    </section>
+
+                </section>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+<div class="reset-dialog-overlay"
+     id="resetDialogOverlay"
+     hidden>
+
+    <div class="reset-dialog"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="resetDialogTitle">
+
+        <button type="button"
+                class="close-reset-dialog"
+                id="closeResetDialog"
+                aria-label="إغلاق">
+            ×
+        </button>
+
+        <div class="reset-dialog-icon">⚠️</div>
+
+        <h3 id="resetDialogTitle">
+            تأكيد إعادة ضبط النتائج
+        </h3>
+
+        <p>
+            ستُصفّر جميع الأهداف والمنجزات والأوسمة،
+            وستبقى أسماء الحافظات محفوظة.
+        </p>
+
+        <form asp-controller="Admin"
+              asp-action="ResetResults"
+              method="post"
+              id="resetResultsForm">
+
+            @Html.AntiForgeryToken()
+
+            <label for="confirmationText">
+                للتأكيد اكتبي:
+                <strong>إعادة ضبط النتائج</strong>
+            </label>
+
+            <input type="text"
+                   id="confirmationText"
+                   name="confirmationText"
+                   class="reset-confirmation-input"
+                   autocomplete="off"
+                   required />
+
+            <div class="reset-dialog-actions">
+
+                <button type="button"
+                        class="cancel-reset-button"
+                        id="cancelResetDialog">
+                    إلغاء
+                </button>
+
+                <button type="submit"
+                        class="confirm-reset-button"
+                        id="confirmResetButton"
+                        disabled>
+                    تأكيد إعادة الضبط
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        const excelFileInput =
+            document.getElementById("excelFile");
+
+        const excelFileName =
+            document.getElementById("excelFileName");
+
+        excelFileInput?.addEventListener(
+            "change",
+            function () {
+                const selectedFile = this.files?.[0];
+
+                excelFileName.textContent = selectedFile
+                    ? selectedFile.name
+                    : "اختاري ملف Excel";
+            }
+        );
+        const openResetDialog =
+    document.getElementById("openResetDialog");
+
+const resetDialogOverlay =
+    document.getElementById("resetDialogOverlay");
+
+const closeResetDialog =
+    document.getElementById("closeResetDialog");
+
+const cancelResetDialog =
+    document.getElementById("cancelResetDialog");
+
+const confirmationText =
+    document.getElementById("confirmationText");
+
+const confirmResetButton =
+    document.getElementById("confirmResetButton");
+
+const requiredResetText = "إعادة ضبط النتائج";
+
+function showResetDialog() {
+    if (!resetDialogOverlay) {
+        return;
+    }
+
+    resetDialogOverlay.hidden = false;
+    document.body.classList.add("dialog-open");
+
+    if (confirmationText) {
+        confirmationText.value = "";
+        confirmationText.focus();
+    }
+
+    if (confirmResetButton) {
+        confirmResetButton.disabled = true;
+    }
+}
+
+function hideResetDialog() {
+    if (!resetDialogOverlay) {
+        return;
+    }
+
+    resetDialogOverlay.hidden = true;
+    document.body.classList.remove("dialog-open");
+}
+
+openResetDialog?.addEventListener(
+    "click",
+    showResetDialog
+);
+
+closeResetDialog?.addEventListener(
+    "click",
+    hideResetDialog
+);
+
+cancelResetDialog?.addEventListener(
+    "click",
+    hideResetDialog
+);
+
+confirmationText?.addEventListener(
+    "input",
+    function () {
+        const isCorrect =
+            this.value.trim() === requiredResetText;
+
+        if (confirmResetButton) {
+            confirmResetButton.disabled = !isCorrect;
+        }
+    }
+);
+
+resetDialogOverlay?.addEventListener(
+    "click",
+    function (event) {
+        if (event.target === resetDialogOverlay) {
+            hideResetDialog();
+        }
+    }
+);
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+        if (
+            event.key === "Escape" &&
+            resetDialogOverlay &&
+            !resetDialogOverlay.hidden
+        ) {
+            hideResetDialog();
+        }
+    }
+);
+    </script>
+}
