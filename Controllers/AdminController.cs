@@ -475,11 +475,8 @@ public async Task<IActionResult> ExportAllResultsPdf()
             page.ContentFromRightToLeft();
 
             page.DefaultTextStyle(style =>
-                style
-                    .FontFamily("Arial")
-                    .FontSize(9)
-                    .FontColor("#17343C")
-            );
+                style.FontFamily("Cairo")
+                    .FontSize(10));
 
             page.Header().Column(header =>
             {

@@ -3,11 +3,25 @@ using NoorSardPlatform.Data;
 using NoorSardPlatform.Hubs;
 using QuestPDF.Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using QuestPDF.Drawing;
 
 var builder = WebApplication.CreateBuilder(args);
 
 QuestPDF.Settings.License = LicenseType.Community;
-QuestPDF.Settings.UseEnvironmentFonts = true;
+QuestPDF.Settings.UseEnvironmentFonts = false;
+
+var cairoRegularPath = Path.Combine(
+    builder.Environment.ContentRootPath,
+    "Fonts",
+    "Cairo-Regular.ttf");
+
+var cairoBoldPath = Path.Combine(
+    builder.Environment.ContentRootPath,
+    "Fonts",
+    "Cairo-Bold.ttf");
+
+FontManager.RegisterFont(File.OpenRead(cairoRegularPath));
+FontManager.RegisterFont(File.OpenRead(cairoBoldPath));
 
 var connectionString =
     builder.Configuration.GetConnectionString("DefaultConnection")
