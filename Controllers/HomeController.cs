@@ -20,23 +20,25 @@ namespace NoorSardPlatform.Controllers
                 .OrderBy(participant => participant.FullName)
                 .ToListAsync();
 
-            int totalTargetParts = participants.Sum(
+            decimal totalTargetParts = participants.Sum(
                 participant => participant.TargetParts
             );
 
-            int totalCompletedParts = participants.Sum(
+            decimal totalCompletedParts = participants.Sum(
                 participant => participant.CompletedParts
             );
 
             double overallPercentage = totalTargetParts > 0
-                ? (double)totalCompletedParts / totalTargetParts * 100
+                ? (double)(totalCompletedParts / totalTargetParts * 100)
                 : 0;
 
             overallPercentage = Math.Min(overallPercentage, 100);
 
             var completedPartsGroups = participants
                 .Where(participant => participant.CompletedParts > 0)
-                .GroupBy(participant => participant.CompletedParts)
+                .GroupBy(participant =>
+                    (int)Math.Floor(participant.CompletedParts)
+                )
                 .OrderBy(group => group.Key)
                 .ToList();
 
@@ -93,23 +95,25 @@ public async Task<IActionResult> DashboardData()
         .AsNoTracking()
         .ToListAsync();
 
-    int totalTargetParts = participants.Sum(
+    decimal totalTargetParts = participants.Sum(
         participant => participant.TargetParts
     );
 
-    int totalCompletedParts = participants.Sum(
+    decimal totalCompletedParts = participants.Sum(
         participant => participant.CompletedParts
     );
 
     double overallPercentage = totalTargetParts > 0
-        ? (double)totalCompletedParts / totalTargetParts * 100
+         ? (double)(totalCompletedParts / totalTargetParts * 100)
         : 0;
 
     overallPercentage = Math.Min(overallPercentage, 100);
 
     var completedPartsGroups = participants
         .Where(participant => participant.CompletedParts > 0)
-        .GroupBy(participant => participant.CompletedParts)
+        .GroupBy(participant =>
+            (int)Math.Floor(participant.CompletedParts)
+        )
         .OrderBy(group => group.Key)
         .ToList();
 

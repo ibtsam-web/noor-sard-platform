@@ -8,9 +8,9 @@ namespace NoorSardPlatform.ViewModels
 
         public int ParticipantsCount { get; set; }
 
-        public int TotalCompletedParts { get; set; }
+        public decimal TotalCompletedParts { get; set; }
 
-        public int TotalTargetParts { get; set; }
+        public decimal TotalTargetParts { get; set; }
 
         public double OverallPercentage { get; set; }
 

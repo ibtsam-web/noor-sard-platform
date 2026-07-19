@@ -20,17 +20,34 @@ document.addEventListener("DOMContentLoaded", function () {
         "participantProgressFill"
     );
 
+    const step = 0.5;
+
+    function normalizeParts(value) {
+        return Math.round(value * 2) / 2;
+    }
+
+    function formatParts(value) {
+        return Number.isInteger(value)
+            ? value.toString()
+            : value.toFixed(1);
+    }
+
     function getTargetParts() {
-        return Math.min(
-            30,
-            Math.max(1, Number(targetPartsInput?.value) || 1)
+        const value = Number(targetPartsInput?.value);
+
+        return normalizeParts(
+            Math.min(
+                30,
+                Math.max(0.5, value || 0.5)
+            )
         );
     }
 
     function getCompletedParts() {
-        return Math.max(
-            0,
-            Number(completedPartsInput?.value) || 0
+        const value = Number(completedPartsInput?.value);
+
+        return normalizeParts(
+            Math.max(0, value || 0)
         );
     }
 
@@ -43,15 +60,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (targetPartsInput) {
-            targetPartsInput.value = targetParts;
+            targetPartsInput.value = formatParts(targetParts);
         }
 
         if (completedPartsInput) {
-            completedPartsInput.value = completedParts;
+            completedPartsInput.value = formatParts(completedParts);
         }
 
         if (completedPartsValue) {
-            completedPartsValue.textContent = completedParts;
+            completedPartsValue.textContent =
+                formatParts(completedParts);
         }
 
         const percentage = Math.round(
@@ -79,7 +97,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const completedParts = getCompletedParts();
 
         if (completedParts < targetParts && completedPartsInput) {
-            completedPartsInput.value = completedParts + 1;
+            completedPartsInput.value = normalizeParts(
+                Math.min(
+                    completedParts + step,
+                    targetParts
+                )
+            );
+
             updateProgressDisplay();
         }
     });
@@ -88,12 +112,22 @@ document.addEventListener("DOMContentLoaded", function () {
         const completedParts = getCompletedParts();
 
         if (completedParts > 0 && completedPartsInput) {
-            completedPartsInput.value = completedParts - 1;
+            completedPartsInput.value = normalizeParts(
+                Math.max(
+                    completedParts - step,
+                    0
+                )
+            );
+
             updateProgressDisplay();
         }
     });
 
     targetPartsInput?.addEventListener("input", function () {
+        updateProgressDisplay();
+    });
+
+    targetPartsInput?.addEventListener("change", function () {
         updateProgressDisplay();
     });
 

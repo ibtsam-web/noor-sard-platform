@@ -41,8 +41,8 @@ namespace NoorSardPlatform.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveProgress(
             int id,
-            int targetParts,
-            int completedParts,
+            decimal targetParts,
+            decimal completedParts,
             bool bronzeMedal,
             bool silverMedal,
             bool goldMedal
@@ -56,10 +56,11 @@ namespace NoorSardPlatform.Controllers
                 return NotFound();
             }
 
-            targetParts = Math.Clamp(targetParts, 1, 30);
+            targetParts = Math.Clamp(targetParts, 0.5m, 30m);
+
             completedParts = Math.Clamp(
                 completedParts,
-                0,
+                0m,
                 targetParts
             );
 

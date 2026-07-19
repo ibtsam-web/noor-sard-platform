@@ -446,17 +446,16 @@ public async Task<IActionResult> ExportAllResultsPdf()
         .OrderBy(participant => participant.FullName)
         .ToListAsync();
 
-    int totalTargetParts = participants.Sum(
+    decimal totalTargetParts = participants.Sum(
         participant => participant.TargetParts
     );
 
-    int totalCompletedParts = participants.Sum(
+    decimal totalCompletedParts = participants.Sum(
         participant => participant.CompletedParts
     );
 
     double overallPercentage = totalTargetParts > 0
-        ? (double)totalCompletedParts /
-          totalTargetParts * 100
+        ? (double)(totalCompletedParts / totalTargetParts * 100)
         : 0;
 
     overallPercentage = Math.Min(

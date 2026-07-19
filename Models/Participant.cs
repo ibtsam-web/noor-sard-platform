@@ -12,10 +12,10 @@ namespace NoorSardPlatform.Models
         public string FullName { get; set; } = string.Empty;
 
         [Range(0, 30)]
-        public int TargetParts { get; set; }
+        public decimal TargetParts { get; set; }
 
         [Range(0, 30)]
-        public int CompletedParts { get; set; }
+        public decimal CompletedParts { get; set; }
 
         public bool BronzeMedal { get; set; }
 
@@ -36,7 +36,7 @@ namespace NoorSardPlatform.Models
                 }
 
                 double percentage =
-                    (double)CompletedParts / TargetParts * 100;
+                     (double)(CompletedParts / TargetParts * 100);
 
                 return Math.Min(percentage, 100);
             }
